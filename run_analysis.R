@@ -1,5 +1,7 @@
 # run_analysis.R
 
+library(dplyr)
+
 # Step 1 : Merge the training and the test sets to create one data set.
 
 activities <- read.table('UCI_HAR_Dataset/activity_labels.txt')
@@ -23,14 +25,25 @@ rm(xtrain, ytrain, strain)
 all <- rbind(test, train)
 rm(test, train)
 
+
+# Step 2 : Use descriptive activity names to name the activities in the data set
+# We take advantage of the names available in the features.txt file
 names(all) <- c('subjectid', 'activityid', features$featurename)
 
-# Extracts only the measurements on the mean and standard deviation for each measurement.
-indx <- grepl('subjectid|activityid|\\-mean\\(\\)|\\-std\\(\\)', colnames(all)) # parenthesis included in regex to filter out column names like meanFreq()
+
+# Step 3 : Extracts only the measurements on the mean and standard deviation for each measurement.
+# We select column names containing appropriate strings
+
+indx <- grepl('subjectid|activityid|\\-mean\\(\\)|\\-std\\(\\)', colnames(all))
 filtered <- all[indx]
 
-# Replace activity id by activity name
-library(dplyr)
+# Step 4 : Appropriately label the data set with descriptive variable names - Replace activity id by activity name
 result <- filtered %>% left_join(activities, by = "activityid") %>% select(-activityid)
+rm(filtered, indx)
+
+# Step 5 : From the previous dataset, create a second tidy data set with the average of aech variable for each activity and each subject
+result2 <- result %>% group_by(activityname, subjectid) %>% summarise_all(funs(mean))
+write.table(result2, row.names = FALSE, file = 'step5.txt')
+
 
 
