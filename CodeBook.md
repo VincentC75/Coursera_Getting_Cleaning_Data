@@ -4,7 +4,7 @@ This CodeBook describes the variables, the data and all transformations that are
 
 ## Data transformations
 
-The following steps are followed to transmom the data
+The following steps are followed to transform the data
 
 1. Load and join this data which is split in a testing and training set
 1. Load labels for the features from description files and assign appropriate column names, filtering symbols.
