@@ -28,13 +28,15 @@ rm(test, train)
 
 # Step 2 : Use descriptive activity names to name the activities in the data set
 # We take advantage of the names available in the features.txt file
+# but we remove symbols (parenthesis and dash) from the names
+features$featurename <- gsub('[-()]', '', features$featurename)
 names(all) <- c('subjectid', 'activityid', features$featurename)
 
 
 # Step 3 : Extracts only the measurements on the mean and standard deviation for each measurement.
 # We select column names containing appropriate strings
 
-indx <- grepl('subjectid|activityid|\\-mean\\(\\)|\\-std\\(\\)', colnames(all))
+indx <- grepl('subjectid|activityid|mean|std', colnames(all))
 filtered <- all[indx]
 
 # Step 4 : Appropriately label the data set with descriptive variable names - Replace activity id by activity name
